@@ -2,7 +2,7 @@ import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
-import {name, age} from './bases/01-types.ts';
+import {dataIds, animal, zoo} from './bases/02-objects.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
@@ -12,8 +12,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <a href="https://www.typescriptlang.org/" target="_blank">
       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
     </a>
-    <h1>Hi, ${ name }!</h1>
-    <h2> You are ${ age } years old.</h2>
+    <h1>Hi, ${ dataIds.join(', ') }!</h1>
+    <h2>Animal: ${ animal.name }</h2>
+    <h3>En zoo: ${zoo.name} </h3>
     <div class="card">
       <button id="counter" type="button"></button>
     </div>
