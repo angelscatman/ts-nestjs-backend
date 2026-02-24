@@ -2,7 +2,7 @@ import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
-import {dataIds, animal, zoo} from './bases/02-objects.ts';
+import {dataIds, cat, animals} from './bases/02-objects.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
@@ -13,8 +13,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
     </a>
     <h1>Hi, ${ dataIds.join(', ') }!</h1>
-    <h2>Animal: ${ animal.name }</h2>
-    <h3>En zoo: ${zoo.name} </h3>
+    <h2>Animal: ${ cat.name }</h2>
+    <h3>En zoo: ${animals.length > 0 ? animals[0].name : 'No animals in zoo'} </h3>
     <div class="card">
       <button id="counter" type="button"></button>
     </div>

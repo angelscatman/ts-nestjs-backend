@@ -7,23 +7,22 @@ dataIds.push(100);
 dataIds.push(+'101');
 
 // Objecto simple en TypeScript
-export const animal = {
-    id: 1,
-    name: 'Cat'
-};
-
-interface Zoo {
+interface Animals {
     id: number;
     name: string;
-    animals?: typeof animal[];
+    age?: number;
 }
 // El uso del operador ? es una propiedad opcional, no confundir con el uso de | undefined que requiere si o si el envio de la propiedad
 // Una interfaz se refiere de una clase al no poder ser instanciada 
 
-export const zoo: Zoo = {
+export const cat: Animals = {
     id: 1,
-    name: 'Zootopia',
-    animals: [animal]
+    name: 'Cat',
+    age: 2
 };
 
-console.log(zoo);
+export const animals: Animals[] = [];
+
+animals.push(cat);
+
+console.log(animals);
