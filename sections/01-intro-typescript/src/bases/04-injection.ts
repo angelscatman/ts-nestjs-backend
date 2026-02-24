@@ -1,5 +1,5 @@
 import type { CatAPIResponse } from "../interfaces/catapi-response.interface";
-import { CatAPIAdapter } from "../api/catapi.adapter";
+import { CatAPIAdapter, CatAPIFetcher, type HttpAdapter } from '../api/catapi.adapter';
 
 export class Animal {
 
@@ -12,7 +12,7 @@ export class Animal {
         public readonly id: string | number,
         public name: string, 
         public species: string,
-        private readonly http: CatAPIAdapter,
+        private readonly http: HttpAdapter,
     ) {}
 
     eat(food : string): string {
@@ -42,6 +42,8 @@ export class Animal {
     }
 }
 
-const catAPI = new CatAPIAdapter();
-export const cat = new Animal('0XYvRd7oD', 'Cat', 'Feline', catAPI);
+const catAPIAxios = new CatAPIAdapter();
+const CatAPIFetch = new CatAPIFetcher();
+export const dog = new Animal('0XYvRd7oD', 'Dog', 'Canine', catAPIAxios);
+export const cat = new Animal('0XYvRd7oD', 'Cat', 'Feline', CatAPIFetch);
 cat.getOrigin();

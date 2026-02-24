@@ -1,6 +1,19 @@
 import axios from 'axios';
 
-export class CatAPIAdapter {
+export interface HttpAdapter {
+    get<T>( url: string): Promise<T>;
+}
+
+export class CatAPIFetcher implements HttpAdapter {
+    
+    async get<T>( url : string): Promise<T> {
+        const response = await fetch(url);
+        const data: T = await response.json();
+        return data;
+    }
+}
+
+export class CatAPIAdapter implements HttpAdapter {
     private readonly axios = axios;
 
     async get<T>( url : string) {
