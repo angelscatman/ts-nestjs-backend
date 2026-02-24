@@ -1,6 +1,6 @@
 import './style.css'
 import { setupCounter } from './counter.ts'
-import { cat } from './bases/03-classes.ts';
+import { cat } from './bases/04-injection.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
