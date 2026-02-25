@@ -1,12 +1,9 @@
 import './style.css'
 import { setupCounter } from './counter.ts'
-import { cat } from './bases/04-injection.ts';
+import { cat } from './bases/05-decorators.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${cat.imageURL}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
     <h1>Hi, ${cat.name}!</h1>
     <div class="card">
       <button id="counter" type="button"></button>
