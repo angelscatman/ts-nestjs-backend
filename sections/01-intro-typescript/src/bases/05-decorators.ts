@@ -19,7 +19,7 @@ export class newAnimal {
 }
 
 const MyDecorator = () => {
-    return (target : Function) => {
+    return (_target : Function) => {
         return newAnimal;
     }
 }
