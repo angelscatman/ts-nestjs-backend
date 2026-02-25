@@ -53,14 +53,14 @@ dev-01:
 	cd sections/01-intro-typescript && yarn dev
 
 dev-02:
-	cd sections/02-intro-nestjs && yarn start:dev
+	cd sections/02-car-dealership && yarn start:dev
 
 # Build targets
 build-01:
 	cd sections/01-intro-typescript && yarn build
 
 build-02:
-	cd sections/02-intro-nestjs && yarn build
+	cd sections/02-car-dealership && yarn build
 
 # Build all sections
 build: build-01 build-02
@@ -74,7 +74,7 @@ uninstall-01:
 
 uninstall-02:
 	@echo ">>> Removing section 02 node_modules..."
-	rm -rf sections/02-intro-nestjs/node_modules
+	rm -rf sections/02-car-dealership/node_modules
 	@echo -e "[✓] Section 02 uninstalled\n"
 
 # Deep clean
