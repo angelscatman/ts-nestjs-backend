@@ -1,0 +1,11 @@
+{
+  "name": "ts-nestjs-backend",
+  "private": true,
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "sections/*"
+  ],
+  "scripts": {
+    "i": "yarn install"
+  }
+}
