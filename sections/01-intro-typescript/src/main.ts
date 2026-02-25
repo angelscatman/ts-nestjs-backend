@@ -1,6 +1,6 @@
 import './style.css'
 import { setupCounter } from './counter.ts'
-import { cat } from './bases/05-decorators.ts';
+import { cat } from './bases/06-decorators.ts';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
