@@ -39,7 +39,7 @@ export class CarsService {
         this.cars = this.cars.map(car => {
             if (car.id === id){
                currentCar = {
-                ... car,
+                ... currentCar,
                 ...updateCarDto,
                 id}
 
