@@ -2,7 +2,7 @@
 # Soporta agregar secciones dinámicamente sin modificar este archivo
 
 .PHONY: help install uninstall workspaces clean clean-all
-.PHONY: dev-01 dev-02 build-01 build-02 build uninstall-01 uninstall-02
+.PHONY: dev-01 dev-02 dev-03 build-01 build-02 build-03 build uninstall-01 uninstall-02 uninstall-03
 
 help:
 	@echo ""
@@ -17,15 +17,18 @@ help:
 	@echo ">> DEVELOPMENT"
 	@echo "   [*] make dev-01               Run section 01 (TypeScript + Vite)"
 	@echo "   [*] make dev-02               Run section 02 (NestJS)"
+	@echo "   [*] make dev-03               Run section 03 (NestJS)"
 	@echo ""
 	@echo ">> BUILD"
 	@echo "   [*] make build                Build ALL sections"
 	@echo "   [*] make build-01             Build section 01 only"
 	@echo "   [*] make build-02             Build section 02 only"
+	@echo "   [*] make build-03             Build section 03 only"
 	@echo ""
 	@echo ">> CLEANUP"
 	@echo "   [*] make uninstall-01         Remove section 01 node_modules"
 	@echo "   [*] make uninstall-02         Remove section 02 node_modules"
+	@echo "   [*] make uninstall-03         Remove section 03 node_modules"
 	@echo "   [*] make clean                Clean dist/ and build artifacts"
 	@echo "   [*] make clean-all            Deep clean + all node_modules"
 	@echo ""
@@ -55,6 +58,9 @@ dev-01:
 dev-02:
 	cd sections/02-car-dealership && yarn start:dev
 
+dev-03:
+	cd sections/03-root-directory && yarn start:dev
+
 # Build targets
 build-01:
 	cd sections/01-intro-typescript && yarn build
@@ -62,8 +68,11 @@ build-01:
 build-02:
 	cd sections/02-car-dealership && yarn build
 
+build-03:
+	cd sections/03-root-directory && yarn build
+
 # Build all sections
-build: build-01 build-02
+build: build-01 build-02 build-03
 	@echo -e "\n[✓✓✓] All sections built successfully!\n"
 
 # Uninstall per-section
@@ -77,13 +86,18 @@ uninstall-02:
 	rm -rf sections/02-car-dealership/node_modules
 	@echo -e "[✓] Section 02 uninstalled\n"
 
+uninstall-03:
+	@echo ">>> Removing section 03 node_modules..."
+	rm -rf sections/03-root-directory/node_modules
+	@echo -e "[✓] Section 03 uninstalled\n"
+
 # Deep clean
 clean:
 	@echo ">>> Cleaning dist/ and build artifacts..."
 	find . -type d \( -name dist -o -name build -o -name coverage \) -exec rm -rf {} + 2>/dev/null || true
 	@echo -e "[✓] Artifacts cleaned\n"
 
-clean-all: uninstall uninstall-01 uninstall-02 clean
+clean-all: uninstall uninstall-01 uninstall-02 uninstall-03 clean
 	@echo -e "\n╔════════════════════════════════════════╗"
 	@echo "║  [✓✓✓] Complete cleanup done! [✓✓✓]    ║"
 	@echo -e "╚════════════════════════════════════════╝\n"
