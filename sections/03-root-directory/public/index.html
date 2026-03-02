@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>RootDirectory</title>
+		<link rel="icon" type="image/svg+xml" href="/assets/plant.svg" />
+		<link rel="stylesheet" href="/css/styles.css" />
+	</head>
+	<body class="m-0 bg-paper text-ink [font-family:'Trebuchet_MS',Verdana,Arial,sans-serif] leading-[1.5]">
+		<div class="mx-auto my-5 max-w-[920px] border border-frame bg-white shadow-docs">
+			<header class="border-b border-frame bg-[#f8f8f8] px-5 pb-3 pt-5">
+				<h1 class="m-0 text-[2.1rem] text-heading [font-family:Georgia,'Times_New_Roman',serif]">
+					RootDirectory
+				</h1>
+				<p class="mb-0 mt-1.5 text-[0.97rem] text-muted">
+					Portal de documentación técnica para el servicio de datos de plantas
+				</p>
+				<p class="mb-0 mt-1 text-[0.8rem] text-[#6b6b6b]">Versión beta · Marzo 2026</p>
+			</header>
+
+			<nav
+				class="flex flex-wrap gap-4 border-b border-[#d2d2d2] bg-[#fcfcfc] px-5 py-[10px]"
+				aria-label="Navegación principal"
+			>
+				<a class="text-[0.95rem] text-link underline decoration-1 hover:text-[#002a66]" href="#inicio">Inicio</a>
+				<a class="text-[0.95rem] text-link underline decoration-1 hover:text-[#002a66]" href="#resumen">Resumen</a>
+				<a class="text-[0.95rem] text-link underline decoration-1 hover:text-[#002a66]" href="#base-url">Base URL</a>
+				<a class="text-[0.95rem] text-link underline decoration-1 hover:text-[#002a66]" href="#estado">Estado</a>
+			</nav>
+
+			<main class="grid gap-[14px] px-5 pb-5 pt-4" id="inicio">
+				<section
+					class="grid items-center gap-3 border border-[#d3d3d3] bg-white p-3 md:grid-cols-[160px_1fr]"
+					id="resumen"
+				>
+					<div
+						class="mx-auto flex h-[138px] w-[138px] items-center justify-center rounded-full border border-[#cde0d0] bg-[radial-gradient(circle_at_35%_35%,#f7fcf8_0%,#dcefe0_65%,#c6dfcc_100%)]"
+						aria-hidden="true"
+					>
+						<img class="block h-auto w-[100px]" src="/assets/plant.svg" alt="Planta" />
+					</div>
+					<div class="text-center md:text-left">
+						<h2
+							class="mb-2.5 mt-0 text-[1.2rem] text-[#21392a] [font-family:Georgia,'Times_New_Roman',serif]"
+						>
+							Resumen
+						</h2>
+						<p class="m-0 text-[0.97rem] text-[#2c2c2c]">
+							Esta API centraliza la información de especies vegetales, parámetros de cultivo
+							y metadatos operativos para su consulta e integración.
+						</p>
+					</div>
+				</section>
+
+				<section class="border border-[#d3d3d3] bg-white p-3" id="base-url">
+					<h2
+						class="mb-2.5 mt-0 text-[1.2rem] text-[#21392a] [font-family:Georgia,'Times_New_Roman',serif]"
+					>
+						Base URL
+					</h2>
+					<p class="m-0 text-[0.96rem] text-[#2b2b2b]">
+						Punto de entrada local del servicio:
+						<code class="border border-[#dcdcdc] bg-[#f2f2f2] px-1.5 py-[2px] text-[0.93rem] [font-family:'Courier_New',Courier,monospace]"
+							>http://localhost:3000/</code
+						>
+					</p>
+				</section>
+
+				<section class="border border-[#d3d3d3] bg-white p-3" id="estado">
+					<h2
+						class="mb-2.5 mt-0 text-[1.2rem] text-[#21392a] [font-family:Georgia,'Times_New_Roman',serif]"
+					>
+						Estado del servicio
+					</h2>
+					<p class="m-0 text-[0.96rem] text-[#2b2b2b]">
+						Entorno actual: <strong class="font-semibold text-[#1f3f2c]">desarrollo local</strong>.
+						Documentación en etapa inicial y sujeta a ampliación.
+					</p>
+				</section>
+			</main>
+		</div>
+	</body>
+</html>
