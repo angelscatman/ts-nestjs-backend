@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { PlantModule } from './plant/plant.module';
+import { TaxonomiaModule } from './taxonomia/taxonomia.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    PlantModule,
+    TaxonomiaModule,
   ],
   controllers: [],
   providers: [],
