@@ -17,18 +17,18 @@ export class TaxonomiaController {
     return this.taxonomiaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taxonomiaService.findOne(+id);
+  @Get(':param')
+  findOne(@Param('param') param: string) {
+    return this.taxonomiaService.findOne(param);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaxonomiaDto: UpdateTaxonomiaDto) {
-    return this.taxonomiaService.update(+id, updateTaxonomiaDto);
+    return this.taxonomiaService.update(id, updateTaxonomiaDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.taxonomiaService.remove(+id);
+    return this.taxonomiaService.remove(id);
   }
 }
