@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Param } from '@nestjs/common';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
 import { isValidObjectId, Model } from 'mongoose';
@@ -71,7 +71,13 @@ export class TaxonomiaService {
     }
   }
 
-  remove(param: string) {
-    return `This action removes a #${param} taxonomia`;
+  async remove(param: string) {
+    const taxonomia = await this.findOne( param );
+    try {
+     await taxonomia.deleteOne();
+     return `Taxonomia with param #${param} removed successfully.`;
+    } catch (error) {
+      this.exceptionHandlerService.handleDBExceptions(error);
+    }
   }
 }
