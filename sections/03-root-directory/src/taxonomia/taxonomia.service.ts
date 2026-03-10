@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
 import { isValidObjectId, Model } from 'mongoose';
@@ -52,11 +52,26 @@ export class TaxonomiaService {
     return this.taxonomiaModel.findOne({ scientificName: param.toLowerCase() });
   }
 
-  update(id: string, updateTaxonomiaDto: UpdateTaxonomiaDto) {
-    return `This action updates a #${id} taxonomia`;
+  async update(param: string, updateTaxonomiaDto: UpdateTaxonomiaDto = {}) {
+    const taxonomia = await this.findOne(param);
+    try {
+      if (!updateTaxonomiaDto || Object.keys(updateTaxonomiaDto).length === 0) {
+        throw new BadRequestException('Update payload is required.');
+      }
+
+      if (updateTaxonomiaDto.scientificName) {
+        updateTaxonomiaDto.scientificName = updateTaxonomiaDto.scientificName.toLowerCase();
+      }
+
+      await taxonomia.updateOne( updateTaxonomiaDto )
+
+      return {... taxonomia.toJSON(), ...updateTaxonomiaDto };
+    } catch (error) {
+      this.exceptionHandlerService.handleDBExceptions(error);
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} taxonomia`;
+  remove(param: string) {
+    return `This action removes a #${param} taxonomia`;
   }
 }

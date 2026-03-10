@@ -22,13 +22,13 @@ export class TaxonomiaController {
     return this.taxonomiaService.findOne(param);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaxonomiaDto: UpdateTaxonomiaDto) {
-    return this.taxonomiaService.update(id, updateTaxonomiaDto);
+  @Patch(':param')
+  update(@Param('param') param: string, @Body() updateTaxonomiaDto: UpdateTaxonomiaDto) {
+    return this.taxonomiaService.update(param, updateTaxonomiaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.taxonomiaService.remove(id);
+  @Delete(':param')
+  remove(@Param('param') param: string) {
+    return this.taxonomiaService.remove(param);
   }
 }
