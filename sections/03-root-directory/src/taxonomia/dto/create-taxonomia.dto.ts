@@ -1,4 +1,4 @@
-import { IsArray, IsDefined, IsInt, IsOptional, IsPositive, IsString, MinLength, ValidateNested } from "class-validator";
+import { IsArray, IsDefined, IsInt, IsOptional, IsPositive, IsString, IsUrl, MinLength, ValidateNested } from "class-validator";
 
 /**
  * DTO to create a new taxonomia. It contains the properties that are required to create a new taxonomia, and the properties that are optional.
@@ -17,4 +17,9 @@ export class CreateTaxonomiaDto {
     @IsArray() @IsOptional()
     @ValidateNested({ each: true })
     commonNames: { name: string, language: string }[];
+
+    @IsOptional()
+    @IsString()
+    @IsUrl()
+    imgUrl?: string;
 }

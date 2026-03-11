@@ -27,6 +27,9 @@ export class Taxonomia extends Document{
     default: [], // array default empty
     })
     commonNames: { name: string; language: string }[];
+
+    @Prop()
+    imgUrl?: string;
 }
 
 export const TaxonomiaSchema = SchemaFactory.createForClass(Taxonomia)

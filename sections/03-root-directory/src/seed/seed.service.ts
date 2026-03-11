@@ -86,6 +86,7 @@ export class SeedService {
         scientificName,
         taxonNo,
         commonNames: this.mapCommonNames(plant['Common name']),
+        imgUrl: plant.Img ?? undefined,
       });
 
       taxonNo += 1;
