@@ -23,13 +23,15 @@
 
 ## Description
 
-Section 3 del workspace `ts-nestjs-backend`: API REST construida con [Nest](https://github.com/nestjs/nest) + TypeScript.
+Section 3 del workspace `ts-nestjs-backend`: API REST de taxonomia construida con [Nest](https://github.com/nestjs/nest) + TypeScript.
 
 El proyecto actualmente implementa:
 
-- Módulo `taxonomia` (CRUD generado con Nest CLI)
+- Módulo `taxonomia` con persistencia en MongoDB (Mongoose)
 - Prefijo global `api` para los endpoints
+- `ValidationPipe` global con `whitelist: true` y `forbidNonWhitelisted: true`
 - Servido de archivos estáticos desde `public/`
+- Scripts de Tailwind CSS para compilar estilos
 
 ## Project setup
 
@@ -64,6 +66,16 @@ Desde la raíz del monorepo:
 $ make dev-03
 ```
 
+Para compilar CSS de Tailwind:
+
+```bash
+# build una vez
+$ yarn run build:css
+
+# watch mode
+$ yarn run start:css
+```
+
 La API levanta por defecto en:
 
 ```text
@@ -76,41 +88,84 @@ Con prefijo global:
 http://localhost:3000/api
 ```
 
-## Docker (MongoDB local)
+## MongoDB local (Docker)
 
-En esta sección tienes un `docker-compose.yaml` para levantar MongoDB local:
+La aplicación se conecta a MongoDB en:
+
+```text
+mongodb://localhost:27017/nest-plants
+```
+
+Para levantar MongoDB local desde `sections/03-root-directory`:
 
 ```bash
 docker compose up -d
 ```
 
-> Nota: el contenedor de Mongo está disponible, pero el proyecto aún no tiene integración activa con Mongoose/Mongo en código.
+Para detenerlo:
+
+```bash
+docker compose down
+```
 
 ## Endpoints principales
 
 ### Taxonomia
 
-- `GET /api/taxonomia` → lista registros (placeholder)
-- `GET /api/taxonomia/:id` → obtiene un registro por id numérico
+- `GET /api/taxonomia` → lista registros (actualmente placeholder)
+- `GET /api/taxonomia/:param` → obtiene un registro por `taxonNo`, `ObjectId` o `scientificName`
 - `POST /api/taxonomia` → crea un registro
-- `PATCH /api/taxonomia/:id` → actualiza un registro
-- `DELETE /api/taxonomia/:id` → elimina un registro
+- `PATCH /api/taxonomia/:param` → actualiza un registro
+- `DELETE /api/taxonomia/:id` → elimina un registro por `ObjectId` valido
 
-> Actualmente el servicio `taxonomia` devuelve respuestas de ejemplo (scaffold inicial) y no persiste datos.
+Body ejemplo para `POST /api/taxonomia`:
+
+```json
+{
+  "scientificName": "Rosa eglanteria",
+  "taxonNo": 1024,
+  "autorship": "L.",
+  "commonNames": [
+    { "name": "Mosqueta", "language": "es" },
+    { "name": "Sweet brier", "language": "en" }
+  ]
+}
+```
+
+Body ejemplo para `PATCH /api/taxonomia/:param`:
+
+```json
+{
+  "scientificName": "Rosa canina",
+  "commonNames": [
+    { "name": "Rosal silvestre", "language": "es" }
+  ]
+}
+```
+
+Notas importantes:
+
+- `scientificName` se guarda en minusculas internamente.
+- `DELETE` usa `ParseMongoIdPipe`; si el id no es `ObjectId` valido, responde `400`.
+- `findAll()` aun no consulta Mongo y responde un mensaje de placeholder.
 
 ## Estructura del módulo
 
-- `src/taxonomia`: controlador, servicio, DTOs y entidad de `taxonomia`.
-- `src/app.module.ts`: importa `TaxonomiaModule` y `ServeStaticModule`.
-- `src/main.ts`: define el prefijo global `api`.
-- `public/`: recursos estáticos servidos por Nest.
+- `src/taxonomia`: controlador, servicio, DTOs y entidad/schema de `taxonomia`.
+- `src/common`: modulo compartido, `ExceptionHandlerService` y pipes reutilizables.
+- `src/common/pipes/parse-mongo-id/parse-mongo-id.pipe.ts`: validacion de `ObjectId` en parametros.
+- `src/app.module.ts`: importa `TaxonomiaModule`, `ServeStaticModule` y `MongooseModule.forRoot(...)`.
+- `src/main.ts`: define `ValidationPipe` global y prefijo `api`.
+- `public/`: recursos estaticos servidos por Nest.
 
 ## Flujo recomendado de uso
 
-1. Levanta la API con `yarn start:dev`.
-2. Prueba `GET /api/taxonomia`.
-3. Prueba operaciones `POST`, `PATCH` y `DELETE`.
-4. Si vas a integrar persistencia luego, levanta Mongo con `docker compose up -d`.
+1. Levanta MongoDB con `docker compose up -d`.
+2. Levanta la API con `yarn start:dev`.
+3. Crea un registro con `POST /api/taxonomia`.
+4. Consultalo con `GET /api/taxonomia/:param` usando `taxonNo`, `scientificName` u `ObjectId`.
+5. Prueba `PATCH /api/taxonomia/:param` y `DELETE /api/taxonomia/:id`.
+6. Opcional: ejecuta `yarn start:css` si estas iterando estilos en `public/css/`.
 
 ## Run tests
 
