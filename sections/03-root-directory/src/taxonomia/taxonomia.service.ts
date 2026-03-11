@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException, Param } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
 import { isValidObjectId, Model } from 'mongoose';
 import { Taxonomia } from './entities/taxonomia.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { ExceptionHandlerService } from '../common/services/exception-handler.service';
+import { ExceptionHandlerService } from 'src/common/services/exception-handler.service';
 
 @Injectable()
 export class TaxonomiaService {
@@ -71,13 +71,10 @@ export class TaxonomiaService {
     }
   }
 
-  async remove(param: string) {
-    const taxonomia = await this.findOne( param );
-    try {
-     await taxonomia.deleteOne();
-     return `Taxonomia with param #${param} removed successfully.`;
-    } catch (error) {
-      this.exceptionHandlerService.handleDBExceptions(error);
-    }
+  async remove(id: string) {
+    const { deletedCount } = await this.taxonomiaModel.deleteOne({ _id: id });
+    if (deletedCount === 0)
+       throw new NotFoundException(`Taxonomia with id #${id} not found.`);
+    return `Taxonomia with id #${id} removed successfully.`;
   }
 }
