@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TaxonomiaService } from './taxonomia.service';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id/parse-mongo-id.pipe';
 
 @Controller('taxonomia')
 export class TaxonomiaController {
@@ -27,8 +28,8 @@ export class TaxonomiaController {
     return this.taxonomiaService.update(param, updateTaxonomiaDto);
   }
 
-  @Delete(':param')
-  remove(@Param('param') param: string) {
-    return this.taxonomiaService.remove(param);
+  @Delete(':id')
+  remove(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.taxonomiaService.remove(id);
   }
 }
