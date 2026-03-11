@@ -8,6 +8,7 @@ import { CommonModule } from '../common/common.module';
 @Module({
   controllers: [TaxonomiaController],
   providers: [TaxonomiaService],
+  exports: [MongooseModule],
   imports: [
     CommonModule,
     MongooseModule.forFeature([{ name: Taxonomia.name, schema: TaxonomiaSchema }]),

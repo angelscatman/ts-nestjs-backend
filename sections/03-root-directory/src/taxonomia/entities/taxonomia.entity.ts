@@ -23,7 +23,7 @@ export class Taxonomia extends Document{
     autorship?: string;
 
     @Prop({
-    type: [{ name: String, language: String }],
+    type: [{ _id: false, name: String, language: String }],
     default: [], // array default empty
     })
     commonNames: { name: string; language: string }[];
