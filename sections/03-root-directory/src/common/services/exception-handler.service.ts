@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   ConflictException,
   HttpException,
@@ -7,7 +8,9 @@ import {
   Logger,
   NotFoundException,
   RequestTimeoutException,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { isAxiosError } from 'axios';
 
 /**
  * Centralized service for handling exceptions across the application, particularly those related to database operations.
@@ -79,10 +82,30 @@ export class ExceptionHandlerService {
   }
 
   /**
-   * Extracts and formats validation error messages from Mongoose ValidationError objects.
-   * @param error 
-   * @returns A string containing all validation error messages concatenated, or a default message if no specific messages are found.
+   * Handles exceptions that occur during HTTP requests to external APIs, particularly those made using Axios.
+   * It checks if the error is an Axios error and maps specific HTTP status codes to corresponding NestJS exceptions.
+   * @param error An unknown error object that may be an Axios error or another type of error.
    */
+  handleAxiosExceptions(error: unknown): never {
+    if (error instanceof HttpException) throw error;
+
+    if (isAxiosError(error)) {
+      const status = error.response?.status;
+      const message = error.response?.data?.message ?? error.message;
+
+      if (status === 401 || status === 403) {
+        throw new UnauthorizedException(`External API authentication failed: ${message}`);
+      }
+
+      throw new BadGatewayException(
+        `External API responded with status ${status}: ${message}`,
+      );
+    }
+
+    this.logger.error('Unexpected error on external fetch', error);
+    throw new InternalServerErrorException('Unexpected error fetching from external API.');
+  }
+
   private getValidationMessage(error: any): string {
     const messages = Object.values(error?.errors ?? {})
       .map((validationError: any) => validationError?.message)
