@@ -25,13 +25,15 @@
 
 Section 3 del workspace `ts-nestjs-backend`: API REST de taxonomia construida con [Nest](https://github.com/nestjs/nest) + TypeScript.
 
-El proyecto actualmente implementa:
+El proyecto implementa CRUD con persistencia en MongoDB para:
 
-- Módulo `taxonomia` con persistencia en MongoDB (Mongoose)
-- Prefijo global `api` para los endpoints
-- `ValidationPipe` global con `whitelist: true` y `forbidNonWhitelisted: true`
-- Servido de archivos estáticos desde `public/`
-- Scripts de Tailwind CSS para compilar estilos
+- `taxonomia` (búsqueda por `taxonNo`, `scientificName` u `ObjectId`)
+- `seed` para cargar plantas desde RapidAPI
+
+La aplicación usa `ValidationPipe` global con:
+
+- `whitelist: true`
+- `forbidNonWhitelisted: true`
 
 ## Project setup
 
@@ -66,57 +68,64 @@ Desde la raíz del monorepo:
 $ make dev-03
 ```
 
-Para compilar CSS de Tailwind:
-
-```bash
-# build una vez
-$ yarn run build:css
-
-# watch mode
-$ yarn run start:css
-```
-
 La API levanta por defecto en:
-
-```text
-http://localhost:3000
-```
-
-Con prefijo global:
 
 ```text
 http://localhost:3000/api
 ```
 
-## MongoDB local (Docker)
+## Configuración de MongoDB
 
-La aplicación se conecta a MongoDB en:
+Antes de levantar la app, asegúrate de:
 
-```text
-mongodb://localhost:27017/nest-plants
+1. Copiar `.env.example` a `.env`:
+```bash
+cp .env.example .env
 ```
 
-Para levantar MongoDB local desde `sections/03-root-directory`:
-
+2. Levantar MongoDB con Docker:
 ```bash
 docker compose up -d
 ```
 
-Para detenerlo:
+La API se conecta a `mongodb://localhost:27017/nest-plants`
+
+## Seed de datos
+
+Para cargar plantas desde RapidAPI, ejecuta:
 
 ```bash
-docker compose down
+GET /api/seed/plants
 ```
+
+Ejemplo con `curl`:
+
+```bash
+curl http://localhost:3000/api/seed/plants
+```
+
+Respuesta esperada:
+
+```json
+{
+  "source": "https://house-plants2.p.rapidapi.com/all-lite",
+  "fetched": 1000,
+  "mapped": 950,
+  "message": "Seed completed. 950 plants inserted into taxonomia BD."
+}
+```
+
+> Nota: Requiere `RAPIDAPI_KEY` en `.env`. Obtén tu clave en [RapidAPI - House Plants 2](https://rapidapi.com/mnai01/api/house-plants2)
 
 ## Endpoints principales
 
 ### Taxonomia
 
-- `GET /api/taxonomia` → lista registros (actualmente placeholder)
-- `GET /api/taxonomia/:param` → obtiene un registro por `taxonNo`, `ObjectId` o `scientificName`
+- `GET /api/taxonomia` → lista registros
+- `GET /api/taxonomia/:param` → obtiene por `taxonNo`, `ObjectId` o `scientificName`
 - `POST /api/taxonomia` → crea un registro
 - `PATCH /api/taxonomia/:param` → actualiza un registro
-- `DELETE /api/taxonomia/:id` → elimina un registro por `ObjectId` valido
+- `DELETE /api/taxonomia/:id` → elimina por `ObjectId`
 
 Body ejemplo para `POST /api/taxonomia`:
 
@@ -126,9 +135,10 @@ Body ejemplo para `POST /api/taxonomia`:
   "taxonNo": 1024,
   "autorship": "L.",
   "commonNames": [
-    { "name": "Mosqueta", "language": "es" },
+    { "name": "Rosa mosqueta", "language": "es" }
     { "name": "Sweet brier", "language": "en" }
-  ]
+  ],
+  "imgUrl": "https://example.com/image.jpg"
 }
 ```
 
@@ -143,29 +153,21 @@ Body ejemplo para `PATCH /api/taxonomia/:param`:
 }
 ```
 
-Notas importantes:
-
-- `scientificName` se guarda en minusculas internamente.
-- `DELETE` usa `ParseMongoIdPipe`; si el id no es `ObjectId` valido, responde `400`.
-- `findAll()` aun no consulta Mongo y responde un mensaje de placeholder.
-
 ## Estructura del módulo
 
-- `src/taxonomia`: controlador, servicio, DTOs y entidad/schema de `taxonomia`.
-- `src/common`: modulo compartido, `ExceptionHandlerService` y pipes reutilizables.
-- `src/common/pipes/parse-mongo-id/parse-mongo-id.pipe.ts`: validacion de `ObjectId` en parametros.
-- `src/app.module.ts`: importa `TaxonomiaModule`, `ServeStaticModule` y `MongooseModule.forRoot(...)`.
-- `src/main.ts`: define `ValidationPipe` global y prefijo `api`.
-- `public/`: recursos estaticos servidos por Nest.
+- `src/taxonomia`: controlador, servicio, DTOs y entidad de taxonomia.
+- `src/seed`: controlador y servicio para cargar plantas desde RapidAPI.
+- `src/common`: módulo compartido con manejo de excepciones y adapters HTTP.
+- `src/app.module.ts`: importa `TaxonomiaModule`, `SeedModule` y `MongooseModule`.
+- `public/`: recursos estáticos servidos por Nest.
 
 ## Flujo recomendado de uso
 
 1. Levanta MongoDB con `docker compose up -d`.
 2. Levanta la API con `yarn start:dev`.
-3. Crea un registro con `POST /api/taxonomia`.
-4. Consultalo con `GET /api/taxonomia/:param` usando `taxonNo`, `scientificName` u `ObjectId`.
-5. Prueba `PATCH /api/taxonomia/:param` y `DELETE /api/taxonomia/:id`.
-6. Opcional: ejecuta `yarn start:css` si estas iterando estilos en `public/css/`.
+3. Carga plantas con `curl http://localhost:3000/api/seed/plants`.
+4. Prueba `GET /api/taxonomia` y `GET /api/taxonomia/:param` (por `taxonNo`, `scientificName` u `ObjectId`).
+5. Experimenta con `POST`, `PATCH` y `DELETE`.
 
 ## Run tests
 
