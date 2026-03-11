@@ -1,17 +1,24 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
 import { isValidObjectId, Model } from 'mongoose';
 import { Taxonomia } from './entities/taxonomia.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { ExceptionHandlerService } from 'src/common/services/exception-handler.service';
+import type { ExceptionMapper } from 'src/common/interfaces/exception-mapper.interface';
+import { EXCEPTION_MAPPER } from 'src/common/constants/injection-tokens';
 
 @Injectable()
 export class TaxonomiaService {
   constructor(
-    @InjectModel( Taxonomia.name )
+    @InjectModel(Taxonomia.name)
     private readonly taxonomiaModel: Model<Taxonomia>,
-    private readonly exceptionHandlerService: ExceptionHandlerService,
+    @Inject(EXCEPTION_MAPPER)
+    private readonly exceptionMapper: ExceptionMapper,
   ) {}
 
   async create(createTaxonomiaDto: CreateTaxonomiaDto) {
@@ -20,7 +27,11 @@ export class TaxonomiaService {
       const taxonomia = await this.taxonomiaModel.create(createTaxonomiaDto);
       return taxonomia;
     } catch (error) {
-      this.exceptionHandlerService.handleDBExceptions(error);
+      this.exceptionMapper.mapAndThrow(error, {
+        type: 'database',
+        entity: 'Taxonomia',
+        operation: 'create',
+      });
     }
   }
 
@@ -36,7 +47,11 @@ export class TaxonomiaService {
 
       throw new NotFoundException(`Taxonomia with identifier '${param}' not found.`);
     } catch (error) {
-      this.exceptionHandlerService.handleDBExceptions(error);
+      this.exceptionMapper.mapAndThrow(error, {
+        type: 'database',
+        entity: 'Taxonomia',
+        operation: 'findOne',
+      });
     }
   }
 
@@ -63,11 +78,15 @@ export class TaxonomiaService {
         updateTaxonomiaDto.scientificName = updateTaxonomiaDto.scientificName.toLowerCase();
       }
 
-      await taxonomia.updateOne( updateTaxonomiaDto )
+        await taxonomia.updateOne(updateTaxonomiaDto);
 
-      return {... taxonomia.toJSON(), ...updateTaxonomiaDto };
+        return { ...taxonomia.toJSON(), ...updateTaxonomiaDto };
     } catch (error) {
-      this.exceptionHandlerService.handleDBExceptions(error);
+      this.exceptionMapper.mapAndThrow(error, {
+        type: 'database',
+        entity: 'Taxonomia',
+        operation: 'update',
+      });
     }
   }
 

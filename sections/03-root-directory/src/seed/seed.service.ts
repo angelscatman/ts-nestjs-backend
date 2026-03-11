@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpClientService } from '../common/services/http-client.service';
-import { ExceptionHandlerService } from '../common/services/exception-handler.service';
+import type { HttpAdapter } from '../common/interfaces/http-adapter.interface';
+import type { ExceptionMapper } from '../common/interfaces/exception-mapper.interface';
 import { PlantsResponse } from './interfaces/plants-response.interface';
 import { CreateTaxonomiaDto } from 'src/taxonomia/dto/create-taxonomia.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Taxonomia } from 'src/taxonomia/entities/taxonomia.entity';
 import { Model } from 'mongoose';
+import {
+  EXCEPTION_MAPPER,
+  HTTP_ADAPTER,
+} from '../common/constants/injection-tokens';
 
 @Injectable()
 export class SeedService {
@@ -17,8 +21,10 @@ export class SeedService {
   constructor(
     @InjectModel(Taxonomia.name)
     private readonly taxonomiaModel: Model<Taxonomia>,
-    private readonly httpClientService: HttpClientService,
-    private readonly exceptionHandlerService: ExceptionHandlerService,
+    @Inject(HTTP_ADAPTER)
+    private readonly httpAdapter: HttpAdapter,
+    @Inject(EXCEPTION_MAPPER)
+    private readonly exceptionMapper: ExceptionMapper,
     private readonly configService: ConfigService,
   ) {
     // Load configuration values from environment variables
@@ -58,14 +64,18 @@ export class SeedService {
   // Helper method to fetch plants data from the external API
   private async fetchPlants(): Promise<PlantsResponse[]> {
     try {
-      return await this.httpClientService.get<PlantsResponse[]>(this.plantsApiUrl, {
+      return await this.httpAdapter.get<PlantsResponse[]>(this.plantsApiUrl, {
         headers: {
           'x-rapidapi-key': this.rapidApiKey,
           'x-rapidapi-host': this.rapidApiHost,
         },
       });
     } catch (error) {
-      this.exceptionHandlerService.handleAxiosExceptions(error);
+      this.exceptionMapper.mapAndThrow(error, {
+        type: 'external',
+        source: 'Plants API',
+        operation: 'fetchPlants',
+      });
     }
   }
 
