@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TaxonomiaService } from './taxonomia.service';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id/parse-mongo-id.pipe';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('taxonomia')
 export class TaxonomiaController {
@@ -14,8 +15,8 @@ export class TaxonomiaController {
   }
 
   @Get()
-  findAll() {
-    return this.taxonomiaService.findAll();
+  findAll( @Query() paginationDto : PaginationDto) {
+    return this.taxonomiaService.findAll(paginationDto);
   }
 
   @Get(':param')

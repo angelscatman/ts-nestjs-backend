@@ -11,6 +11,7 @@ import { Taxonomia } from './entities/taxonomia.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import type { ExceptionMapper } from 'src/common/interfaces/exception-mapper.interface';
 import { EXCEPTION_MAPPER } from 'src/common/constants/injection-tokens';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class TaxonomiaService {
@@ -35,8 +36,9 @@ export class TaxonomiaService {
     }
   }
 
-  findAll() {
-    return `This action returns all taxonomia`;
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 10 , offset = 0 } = paginationDto;
+    return this.taxonomiaModel.find().limit(limit).skip(offset).sort({ taxonNo: 1 });
   }
 
   async findOne(param: string) {
