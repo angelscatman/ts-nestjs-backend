@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CreateTaxonomiaDto } from './dto/create-taxonomia.dto';
 import { UpdateTaxonomiaDto } from './dto/update-taxonomia.dto';
 import { isValidObjectId, Model } from 'mongoose';
@@ -15,12 +16,17 @@ import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class TaxonomiaService {
+  private defaultPageLimit: number;
+
   constructor(
     @InjectModel(Taxonomia.name)
     private readonly taxonomiaModel: Model<Taxonomia>,
     @Inject(EXCEPTION_MAPPER)
     private readonly exceptionMapper: ExceptionMapper,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.defaultPageLimit = configService.getOrThrow<number>('defaultPageLimit');
+  }
 
   async create(createTaxonomiaDto: CreateTaxonomiaDto) {
     createTaxonomiaDto.scientificName = createTaxonomiaDto.scientificName.toLowerCase();
@@ -37,7 +43,7 @@ export class TaxonomiaService {
   }
 
   findAll(paginationDto: PaginationDto) {
-    const { limit = 10 , offset = 0 } = paginationDto;
+    const { limit = this.defaultPageLimit , offset = 0 } = paginationDto;
     return this.taxonomiaModel.find().limit(limit).skip(offset).sort({ taxonNo: 1 });
   }
 
