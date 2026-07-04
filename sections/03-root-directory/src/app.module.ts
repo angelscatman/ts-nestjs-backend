@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { JoiValidationSchema } from './config/joi.validation';
 import { TaxonomiaModule } from './taxonomia/taxonomia.module';
 import { SeedModule } from './seed/seed.module';
 import { envConfiguration } from './config/app.config';
@@ -11,6 +12,7 @@ import { envConfiguration } from './config/app.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validationSchema: JoiValidationSchema,
       envFilePath: '.env',
       load:[envConfiguration],
     }),
